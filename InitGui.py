@@ -46,9 +46,9 @@ class BearingsWorkbench (Workbench):
         import BearingsBase # , FSScrewCalc, PEMInserts, FastenersCmd, FSNuts
 #        import CountersunkHoles, FSChangeParams
         self.list = []
-#        cmdlist = FastenerBase.FSGetCommands("command")
+        cmdlist = BearingsBase.BSGetCommands("command")
 #        self.appendToolbar("FS Commands",cmdlist)
-#        self.appendMenu("Fasteners",cmdlist) # creates a new menu
+        self.appendMenu("Bearings",cmdlist) # creates a new menu
 #        self.list.extend(cmdlist)
 #        screwlist1 = FastenerBase.FSGetCommands("screws")
 #        screwlist = []

@@ -51,74 +51,75 @@ iconPath = os.path.join( __dir__, 'Icons' )
 #        # upgrade properties of existing objects
 #        if not hasattr(obj, 'leftHanded'):
 #            obj.addProperty("App::PropertyBool", "leftHanded", "Parameters", "Left handed thread").leftHanded = False
-#
-#
-#class FSGroupCommand:
-#    def __init__(self, cmds, menuText, toolTip):
-#        self.commands = cmds
-#        self.menuText = menuText
-#        self.toolTip = toolTip
-#
-#    def GetCommands(self):
-#        return tuple(self.commands)  # a tuple of command names that you want to group
-#        # return ('FSFlip', 'FSMove', 'FSSimple', 'FSFillet')
-#
-#    def GetResources(self):
-#        return {'MenuText': self.menuText, 'ToolTip': self.toolTip}
-#
-#    def IsActive(self):
-#        return Gui.ActiveDocument is not None
-#    # def Activated(self, index): # index is an int in the range [0, len(GetCommands)
-#
-#
-#DropButtonSupported = int(FreeCAD.Version()[1]) > 15  # and  int(FreeCAD.Version()[2].split()[0]) >= 5165
-#RadioButtonSupported = int(FreeCAD.Version()[1]) > 15  # and  int(FreeCAD.Version()[2].split()[0]) >= 5560
+
+
+class BSGroupCommand:
+    def __init__(self, cmds, menuText, toolTip):
+        self.commands = cmds
+        self.menuText = menuText
+        self.toolTip = toolTip
+
+    def GetCommands(self):
+        return tuple(self.commands)  # a tuple of command names that you want to group
+        # return ('FSFlip', 'FSMove', 'FSSimple', 'FSFillet')
+
+    def GetResources(self):
+        return {'MenuText': self.menuText, 'ToolTip': self.toolTip}
+
+    def IsActive(self):
+        return Gui.ActiveDocument is not None
+    # def Activated(self, index): # index is an int in the range [0, len(GetCommands)
+
+
+DropButtonSupported = int(FreeCAD.Version()[1]) > 15  # and  int(FreeCAD.Version()[2].split()[0]) >= 5165
+RadioButtonSupported = int(FreeCAD.Version()[1]) > 15  # and  int(FreeCAD.Version()[2].split()[0]) >= 5560
 #FSParam = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Fasteners")
 #GroupButtonMode = FSParam.GetInt("ScrewToolbarGroupMode", 1)  # 0 = none, 1 = separate toolbar 2 = drop down buttons
 #if GroupButtonMode == 2 and not DropButtonSupported:
 #    GroupButtonMode = 1
-#
-#
-#class FSCommandList:
-#    def __init__(self):
-#        self.commands = {}
-#
-#    def append(self, cmd, group="screws", subgroup=None):
-#        if not (group in self.commands):
-#            self.commands[group] = []
-#        self.commands[group].append((cmd, subgroup))
-#
-#    def getCommands(self, group):
-#        cmdlist = []
-#        cmdsubs = {}
-#        for cmd in self.commands[group]:
-#            command, subgroup = cmd
-#            if subgroup is not None and GroupButtonMode > 0:
-#                if not (subgroup in cmdsubs):
-#                    cmdsubs[subgroup] = []
-#                    if GroupButtonMode == 2:
-#                        cmdlist.append(subgroup.replace(" ", ""))
-#                        cmdlist.append("Separator")
-#                cmdsubs[subgroup].append(command)
-#            else:
-#                cmdlist.append(command)
-#        for subcommand in cmdsubs:
-#            if GroupButtonMode == 2:
-#                Gui.addCommand(subcommand.replace(" ", ""), FSGroupCommand(cmdsubs[subcommand], subcommand, subcommand))
-#            else:
-#                cmdlist.append((subcommand.replace(" ", ""), cmdsubs[subcommand], subcommand))
-#        return cmdlist
-#
-#
-#FSCommands = FSCommandList()
+GroupButtonMode = 1
+
+
+class BSCommandList:
+    def __init__(self):
+        self.commands = {}
+
+    def append(self, cmd, group="deepgroove", subgroup=None):
+        if not (group in self.commands):
+            self.commands[group] = []
+        self.commands[group].append((cmd, subgroup))
+
+    def getCommands(self, group):
+        cmdlist = []
+        cmdsubs = {}
+        for cmd in self.commands[group]:
+            command, subgroup = cmd
+            if subgroup is not None and GroupButtonMode > 0:
+                if not (subgroup in cmdsubs):
+                    cmdsubs[subgroup] = []
+                    if GroupButtonMode == 2:
+                        cmdlist.append(subgroup.replace(" ", ""))
+                        cmdlist.append("Separator")
+                cmdsubs[subgroup].append(command)
+            else:
+                cmdlist.append(command)
+        for subcommand in cmdsubs:
+            if GroupButtonMode == 2:
+                Gui.addCommand(subcommand.replace(" ", ""), BSGroupCommand(cmdsubs[subcommand], subcommand, subcommand))
+            else:
+                cmdlist.append((subcommand.replace(" ", ""), cmdsubs[subcommand], subcommand))
+        return cmdlist
+
+
+BSCommands = BSCommandList()
 #FSClassIcons = {}
 #FSLastInvert = False
-#
-#
-#def FSGetCommands(group="screws"):
-#    return FSCommands.getCommands(group)
-#
-#
+
+
+def BSGetCommands(group="deepgroove"):
+    return BSCommands.getCommands(group)
+
+
 ## fastener types
 #
 #class FSFastenerType:

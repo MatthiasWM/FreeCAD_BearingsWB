@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<package format="1" xmlns="https://wiki.freecad.org/Package_Metadata">
+  <name>Bearings Workbench</name>
+  <description>Some common bearings and bearing tools for FreeCAD.</description>
+  <version>0.0.1</version>
+  <date>2022-08-03</date>
+  <maintainer email="github@matthiasm.com">Matthias Melcher</maintainer>
+  <license file="LICENSE">GPLv2</license>
+  <url type="repository" branch="master">https://github.com/MatthiasWM/FreeCAD_BearingsWB</url>
+  <url type="readme">https://github.com/MatthiasWM/FreeCAD_BearingsWB/blob/master/README.md</url>
+  <icon>Resources/Icons/BSLogo.svg</icon>
+
+  <content>
+    <workbench>
+      <classname>BearingsWorkbench</classname>
+      <subdirectory>./</subdirectory>
+      <tag>bearings</tag>
+    </workbench>
+  </content>
+
+</package>

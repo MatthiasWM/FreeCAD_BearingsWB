@@ -26,8 +26,6 @@ No details yet.
 
 **Note:** Don't expect fast progress.
 
-**See:** [Fasteners Workbenche](https://github.com/shaise/FreeCAD_FastenersWB)
-
 #### To do:
 * vectorize `Icons/BSLogo.svg` and all other incoming icons
 * set the icon colors to dark orange for metric and dark cyan for imperial
@@ -35,7 +33,6 @@ No details yet.
 * add database with known bearing sizes
 * add database selection dialog box
 * add property editor
-* improve bearing 3d model
 * add flip function
 * add bearing features (covers, grooves, material, flange, seal, clearance, lubricant...)
 * add BOM that works with linked objects

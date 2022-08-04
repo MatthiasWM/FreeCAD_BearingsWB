@@ -33,7 +33,7 @@ No details yet.
 * add screencast and screen shots for this README 
 
 #### Release Notes 
-* V0.0.01  18 Jun 2015:  Initial version 
+* V0.0.01  04 Aug 2022:  Initial version 
 
 <!-- ### Contributing
 See [CONTRIBUTING.md](CONTRIBUTING.md) -->

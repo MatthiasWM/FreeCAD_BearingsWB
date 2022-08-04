@@ -24,3 +24,4 @@
 ###################################################################################
 
 # print "Bearings workbench Loaded"
+# There is nothing else to do here. Look at InitGui.py to get started.

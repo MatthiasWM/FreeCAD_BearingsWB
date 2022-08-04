@@ -32,6 +32,8 @@ main_bsWB_Icon = os.path.join( bsWB_icons_path , 'BSLogo.svg')
 
 BEARINGSWB_VERSION = 'V0.0.1'
 
+
+
 class BearingsWorkbench (Workbench):
  
     global main_bsWB_Icon
@@ -39,16 +41,20 @@ class BearingsWorkbench (Workbench):
     MenuText = "Bearings"
     ToolTip = "Create ISO Bearings"
     Icon = main_bsWB_Icon
+
+    list = []
  
     def Initialize(self):
         "This function is executed when FreeCAD starts"
         import os
-        import BearingsBase # , FSScrewCalc, PEMInserts, FastenersCmd, FSNuts
+        import Bwb6BallBearings
+#        import BearingsBase # , FSScrewCalc, PEMInserts, FastenersCmd, FSNuts
 #        import CountersunkHoles, FSChangeParams
-        self.list = []
-        cmdlist = BearingsBase.BSGetCommands("command")
-#        self.appendToolbar("FS Commands",cmdlist)
-        self.appendMenu("Bearings",cmdlist) # creates a new menu
+        self.list.extend(Bwb6BallBearings.getCommands())
+#        cmdlist = BearingsBase.BSGetCommands("command")
+        self.appendToolbar("FS Commands", self.list)
+        self.appendMenu("Bearings", self.list) # creates a new menu
+##        self.appendMenu("Bearings",cmdlist) # creates a new menu
 #        self.list.extend(cmdlist)
 #        screwlist1 = FastenerBase.FSGetCommands("screws")
 #        screwlist = []
@@ -66,6 +72,12 @@ class BearingsWorkbench (Workbench):
 #          self.list.extend(screwlist)
         FreeCADGui.addIconPath(BearingsBase.iconPath)
 #        FreeCADGui.addPreferencePage( os.path.join( FastenerBase.__dir__, 'FSprefs.ui'),'Fasteners' )
+
+#        self.list = ["MyCommand1", "MyCommand2"] # A list of command names created in the line above
+#        self.appendToolbar("My Commands",self.list) # creates a new toolbar with your commands
+#        self.appendMenu("My New Menu",self.list) # creates a new menu
+#        self.appendMenu(["An existing Menu","My submenu"],self.list) # appends a submenu to an existing menu
+        return
  
     def Activated(self):
         "This function is executed when the workbench is activated"

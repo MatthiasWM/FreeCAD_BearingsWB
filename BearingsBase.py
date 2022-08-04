@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ###################################################################################
 #
-#  FastenerBase.py
+#  BearingBase.py
 #
 #  Copyright 2022 Matthias Melcher <github at matthiasm dot com>
 #
@@ -26,8 +26,7 @@ from FreeCAD import Gui
 from FreeCAD import Base
 from PySide import QtGui
 import FreeCAD, FreeCADGui, Part, os, math, sys
-import DraftVecUtils
-#from screw_maker import *
+#import DraftVecUtils
 
 __dir__ = os.path.dirname(__file__)
 iconPath = os.path.join( __dir__, 'Icons' )

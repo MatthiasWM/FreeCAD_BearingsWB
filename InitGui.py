@@ -30,7 +30,7 @@ bsWB_icons_path =  os.path.join( bsWBpath, 'Icons')
 global main_bsWB_Icon
 main_bsWB_Icon = os.path.join( bsWB_icons_path , 'BSLogo.svg')
 
-BEARINGSWB_VERSION = 'V0.0.1'
+BEARINGSWB_VERSION = 'V0.0.2'
 
 
 
@@ -39,7 +39,7 @@ class BearingsWorkbench (Workbench):
     global main_bsWB_Icon
     
     MenuText = "Bearings"
-    ToolTip = "Create ISO Bearings"
+    ToolTip = "Create Rolling Bearings"
     Icon = main_bsWB_Icon
 
     list = []
@@ -70,7 +70,7 @@ class BearingsWorkbench (Workbench):
 #        if len(screwlist) > 0:
 #          self.appendToolbar("FS Screws",screwlist) # creates main screw toolbar
 #          self.list.extend(screwlist)
-        FreeCADGui.addIconPath(BearingsBase.iconPath)
+#        FreeCADGui.addIconPath(BearingsBase.iconPath)
 #        FreeCADGui.addPreferencePage( os.path.join( FastenerBase.__dir__, 'FSprefs.ui'),'Fasteners' )
 
 #        self.list = ["MyCommand1", "MyCommand2"] # A list of command names created in the line above

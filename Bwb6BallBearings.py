@@ -22,27 +22,99 @@ class Bearing:
         obj.addProperty("App::PropertyLength", "BoreDiameter", "Bearing", "Inner Diameter").BoreDiameter = 8.0
         obj.addProperty("App::PropertyLength", "OuterDiameter", "Bearing", "Outer Diameter").OuterDiameter = 22.0
         obj.addProperty("App::PropertyLength", "Width", "Bearing", "Total Bearing Width").Width = 7.0
+        obj.addProperty("App::PropertyLength", "HousingFillet", "Bearing", "Radius of Shaft and Housing Fillet").HousingFillet = 0.3
+#        obj.addProperty("App::PropertyEnumeration", "RenderQuality", "Bearing", "Level of Detail in Model")
+#        obj.RenderQuality = [ "minimal", "good", "detailed" ]
+#        obj.RenderQuality = "good"
         obj.Proxy = self
 
     def onChanged(self, obj, prop):
         '''Do something when a property has changed'''
         FreeCAD.Console.PrintMessage("Change property: " + str(prop) + "\n")
-        if prop == "BoreDiameter" or prop == "OuterDiameter" or prop == "Width" :
+        if  prop == "BoreDiameter" or \
+            prop == "OuterDiameter" or \
+            prop == "Width" \
+            or prop == "HousingFillet":
           self.execute(obj)
 
     def execute(self, obj):
         '''Do something when doing a recomputation, this method is mandatory'''
-        p0 = Base.Vector( obj.BoreDiameter,  0.0,  obj.Width)
-        p1 = Base.Vector( obj.OuterDiameter, 0.0,  obj.Width)
-        p2 = Base.Vector( obj.OuterDiameter, 0.0,  0.0)
-        p3 = Base.Vector( obj.BoreDiameter,  0.0,  0.0)
-        e0 = Part.makeLine(p0, p1)
-        e1 = Part.makeLine(p1, p2)
-        e2 = Part.makeLine(p2, p3)
-        e3 = Part.makeLine(p3, p0)
-        aWire = Part.Wire([e0, e1, e2, e3])
-        aFace = Part.Face(aWire)
-        aBearing = aFace.revolve(Base.Vector(0.0, 0.0, 0.0), Base.Vector(0.0, 0.0, 1.0), 360)
+#if SIMPLE
+#        p0 = Base.Vector( obj.BoreDiameter/2.0,  0.0,  obj.Width)
+#        p1 = Base.Vector( obj.OuterDiameter/2.0, 0.0,  obj.Width)
+#        p2 = Base.Vector( obj.OuterDiameter/2.0, 0.0,  0.0)
+#        p3 = Base.Vector( obj.BoreDiameter/2.0,  0.0,  0.0)
+#        e0 = Part.makeLine(p0, p1)
+#        e1 = Part.makeLine(p1, p2)
+#        e2 = Part.makeLine(p2, p3)
+#        e3 = Part.makeLine(p3, p0)
+#        aWire = Part.Wire([e0, e1, e2, e3])
+#else if GOOD
+        ri = obj.BoreDiameter/2
+        ro = obj.OuterDiameter/2
+        w = obj.Width
+        f = obj.HousingFillet
+        ff = f*0.292893218813452 # 1-sin(45)
+        h = (ro-ri)/4.0
+
+        ## --- How to draw a section of a sealed ball bearing
+        p = []
+        e = []
+        i = 0
+        # -- bottom surface
+        p.append(Base.Vector(ro, 0.0, f))
+        p.append(Base.Vector(ro-ff, 0.0, ff))
+        p.append(Base.Vector(ro-f, 0.0, 0.0))
+        e.append(Part.Arc(p[i], p[i+1], p[i+2]).toShape()); i+=2 # top right fillet
+        p.append(Base.Vector(ro-h+f, 0.0, 0.0))
+        e.append(Part.makeLine(p[i], p[i+1])); i+=1 # top right surface
+        p.append(Base.Vector(ro-h+ff, 0.0, ff))
+        p.append(Base.Vector(ro-h, 0.0, f))
+        e.append(Part.Arc(p[i], p[i+1], p[i+2]).toShape()); i+=2 # outer shell bottom right fillet
+        p.append(Base.Vector(ro-h-f, 0.0, 0))
+        e.append(Part.makeLine(p[i], p[i+1])); i+=1 # seal outer edge
+        p.append(Base.Vector(ri+h+f, 0.0, 0))
+        e.append(Part.makeLine(p[i], p[i+1])); i+=1 # seal side
+        p.append(Base.Vector(ri+h, 0.0, f))
+        e.append(Part.makeLine(p[i], p[i+1])); i+=1 # seal inner edge
+        p.append(Base.Vector(ri+h-ff, 0.0, ff))
+        p.append(Base.Vector(ri+h-f, 0.0, 0.0))
+        e.append(Part.Arc(p[i], p[i+1], p[i+2]).toShape()); i+=2 # inner shell top right fillet
+        p.append(Base.Vector(ri+f, 0.0, 0))
+        e.append(Part.makeLine(p[i], p[i+1])); i+=1 # inner shell right side
+        p.append(Base.Vector(ri+ff, 0.0, ff))
+        p.append(Base.Vector(ri, 0.0, f))
+        e.append(Part.Arc(p[i], p[i+1], p[i+2]).toShape()); i+=2 # inner shell bottom right fillet
+        # -- mirror the top surface
+        p.append(Base.Vector(ri, 0.0, w-f))
+        e.append(Part.makeLine(p[i], p[i+1])); i+=1 # inner shell right side
+        p.append(Base.Vector(ri+ff, 0.0, w-ff))
+        p.append(Base.Vector(ri+f, 0.0, w))
+        e.append(Part.Arc(p[i], p[i+1], p[i+2]).toShape()); i+=2 # inner shell bottom left fillet
+        p.append(Base.Vector(ri+h-f, 0.0, w))
+        e.append(Part.makeLine(p[i], p[i+1])); i+=1 # inner shell left side
+        p.append(Base.Vector(ri+h-ff, 0.0, w-ff))
+        p.append(Base.Vector(ri+h, 0.0, w-f))
+        e.append(Part.Arc(p[i], p[i+1], p[i+2]).toShape()); i+=2 # inner shell top right fillet
+        p.append(Base.Vector(ri+h+f, 0.0, w))
+        e.append(Part.makeLine(p[i], p[i+1])); i+=1 # seal inner edge
+        p.append(Base.Vector(ro-h-f, 0.0, w))
+        e.append(Part.makeLine(p[i], p[i+1])); i+=1 # seal side
+        p.append(Base.Vector(ro-h, 0.0, w-f))
+        e.append(Part.makeLine(p[i], p[i+1])); i+=1 # seal outer edge
+        p.append(Base.Vector(ro-h+ff, 0.0, w-ff))
+        p.append(Base.Vector(ro-h+f, 0.0, w))
+        e.append(Part.Arc(p[i], p[i+1], p[i+2]).toShape()); i+=2 # outer shell bottom left fillet
+        p.append(Base.Vector(ro-f, 0.0, w))
+        e.append(Part.makeLine(p[i], p[i+1])); i+=1 # top right surface
+        p.append(Base.Vector(ro-ff, 0.0, w-ff))
+        p.append(Base.Vector(ro, 0.0, w-f))
+        e.append(Part.Arc(p[i], p[i+1], p[i+2]).toShape()); i+=2 # top left fillet
+        e.append(Part.makeLine(p[i], p[0])); i+=1 # close the surface (top)
+        aWire = Part.Wire(e)
+        aBearing = aWire.revolve(Base.Vector(0.0, 0.0, 0.0), Base.Vector(0.0, 0.0, 1.0), 360)
+#else if DETAILED
+            # if we go crazy, we can draw the balls here
         obj.Shape = aBearing
         FreeCAD.Console.PrintMessage("Recompute Python Box feature\n")
 
@@ -109,19 +181,13 @@ class CmdAddBearing608:
         bb = Bearing(ScrewObj)
 #        ScrewObj.Label = ScrewObj.Proxy.itemText
         ViewProviderBearing(ScrewObj.ViewObject)
-#        ViewProviderBox(a.ViewObject)
-#        ScrewObj = doc.addObject("Part::FeaturePython", "BB608")
-#        ScrewObj.Label = "BB608"
-#        ScrewObj.Shape = aBearing
-#        ScrewObj.addProperty("App::PropertyLength", "InnerDiameter", "Bearing", "Inner Diameter").InnerDiameter = 8.0
-
         doc.recompute()
         return
 
     def IsActive(self):
         """Here you can define if the command must be active or not (greyed) if certain conditions
         are met or not. This function is optional."""
-        return True
+        return FreeCAD.ActiveDocument is not None
 
 FreeCADGui.addCommand("AddBearing608", CmdAddBearing608())
 

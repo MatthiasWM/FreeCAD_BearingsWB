@@ -644,8 +644,8 @@ def BSGetCommands(group="deepgroove"):
 #        return screwObj, edgeObj
 #
 #
-#Gui.addCommand('FSMove', FSMoveCommand())
-#FSCommands.append('FSMove', "command")
+Gui.addCommand('BSMove', BSMoveCommand())
+BSCommands.append('BSMove', "command")
 #
 #
 #class FSMakeSimpleCommand:

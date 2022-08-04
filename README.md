@@ -38,6 +38,7 @@ No details yet.
 * add BOM that works with linked objects
 
 #### Release Notes 
+* V0.0.02  04 Aug 2022:  A 608 ball bearing can be created, edited, and saved 
 * V0.0.01  04 Aug 2022:  Initial version 
 
 <!-- ### Contributing

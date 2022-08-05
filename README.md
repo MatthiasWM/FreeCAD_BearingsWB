@@ -48,10 +48,12 @@ No details yet.
 * vectorize `Icons/BSLogo.svg` and all other incoming icons
 * set the icon colors to dark orange for metric and dark cyan for imperial
 * add screencast and screen shots for this README 
-* add database selection dialog box
-* add "Tasks" dialog to browse database
+* add "Tasks" dialog to browse database (or use custom pulldown menus)
 * add bearing features (covers, grooves, material, flange, seal, clearance, lubricant...)
 * add BOM that works with linked objects
+* add function to align bearings to other concentric object
+* add a clearance/distance property
+* add a flip property
 
 #### Release Notes 
 * V0.0.02  04 Aug 2022:  A 608 ball bearing can be created, edited, and saved 

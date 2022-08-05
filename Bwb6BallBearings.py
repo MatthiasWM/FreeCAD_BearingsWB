@@ -7,6 +7,7 @@ from FreeCAD import Base
 import DraftVecUtils
 from pathlib import Path
 
+import Bwb6Table
 
 def getCommands():
   return ["AddBearing608"]
@@ -15,6 +16,10 @@ def getCommands():
 __dir__ = os.path.dirname(__file__)
 iconPath = os.path.join( __dir__, 'Icons' )
 
+# retrieved_elements = list(filter(lambda x: 'Bird' in x, animals))
+
+def PrettyName(bb):
+    return "{}: {}x{}x{}".format( bb['name'], bb['d'], bb['D'], bb['B'] )
 
 class Bearing:
     def __init__(self, obj):
@@ -26,7 +31,27 @@ class Bearing:
 #        obj.addProperty("App::PropertyEnumeration", "RenderQuality", "Bearing", "Level of Detail in Model")
 #        obj.RenderQuality = [ "minimal", "good", "detailed" ]
 #        obj.RenderQuality = "good"
+
+        obj.addProperty("App::PropertyEnumeration", "Designation", "Bearing", "Basic ISO Designation")
+        designationChoice = [ "608" ]
+        for i in Bwb6Table.lut:
+            if i['d'] == obj.BoreDiameter:
+                designationChoice.append( "Same Bore|" + PrettyName(i))
+        for i in Bwb6Table.lut:
+            if i['D'] == obj.OuterDiameter:
+                designationChoice.append( "Same Diameter|" + PrettyName(i))
+        for i in Bwb6Table.lut:
+            if i['B'] == obj.Width:
+                designationChoice.append( "Same Width|" + PrettyName(i))
+        obj.Designation = designationChoice
+        obj.Designation = "608"
         obj.Proxy = self
+
+    def SizeFromDesignation(self, des): # TODO:
+
+    def DesignationFromSize(self): # TODO:
+
+    def UpdateDesignationChoice(self): # TODO:
 
     def onChanged(self, obj, prop):
         '''Do something when a property has changed'''

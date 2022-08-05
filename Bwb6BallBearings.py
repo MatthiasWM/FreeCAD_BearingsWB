@@ -22,48 +22,124 @@ def PrettyName(bb):
     return "{}: {}x{}x{}".format( bb['name'], bb['d'], bb['D'], bb['B'] )
 
 class Bearing:
+
+    avoidRecursion = False
+    designationChecked = True
+
+    # This is called if a bearing is first created.
+    # It's *not* called when a scene is loaded (see: onDocumentRestored(self, obj) ??)
     def __init__(self, obj):
         '''Add some custom properties to our box feature'''
+        # Add all properties needed by the Bearing class and fill it with the default 608 bearing data
         obj.addProperty("App::PropertyLength", "BoreDiameter", "Bearing", "Inner Diameter").BoreDiameter = 8.0
         obj.addProperty("App::PropertyLength", "OuterDiameter", "Bearing", "Outer Diameter").OuterDiameter = 22.0
         obj.addProperty("App::PropertyLength", "Width", "Bearing", "Total Bearing Width").Width = 7.0
         obj.addProperty("App::PropertyLength", "HousingFillet", "Bearing", "Radius of Shaft and Housing Fillet").HousingFillet = 0.3
-#        obj.addProperty("App::PropertyEnumeration", "RenderQuality", "Bearing", "Level of Detail in Model")
-#        obj.RenderQuality = [ "minimal", "good", "detailed" ]
-#        obj.RenderQuality = "good"
-
-        obj.addProperty("App::PropertyEnumeration", "Designation", "Bearing", "Basic ISO Designation")
-        designationChoice = [ "608" ]
-        for i in Bwb6Table.lut:
-            if i['d'] == obj.BoreDiameter:
-                designationChoice.append( "Same Bore|" + PrettyName(i))
-        for i in Bwb6Table.lut:
-            if i['D'] == obj.OuterDiameter:
-                designationChoice.append( "Same Diameter|" + PrettyName(i))
-        for i in Bwb6Table.lut:
-            if i['B'] == obj.Width:
-                designationChoice.append( "Same Width|" + PrettyName(i))
-        obj.Designation = designationChoice
-        obj.Designation = "608"
+        obj.addProperty("App::PropertyString", "Designation", "Bearing", "Basic ISO Designation").Designation = "608: 8x22x7"
+        # Also switches on the onChanged callback
         obj.Proxy = self
 
-    def SizeFromDesignation(self, des): # TODO:
+    # Find the designation in the database and update the sizes accordingly
+    def SetSizesFromDesignation(self, obj, setSizes=True):
+        des = obj.Designation
+        ix = des.find(':')
+        if ix >= 0:
+            des = des[:ix]
+        FreeCAD.Console.PrintMessage("MATT: Find database entry for <" + des + "> \n")
+        found = False
+        for i in Bwb6Table.lut:
+            if i['name'] == des:
+                if setSizes:
+                    obj.BoreDiameter = i['d']
+                    obj.OuterDiameter = i['D']
+                    obj.Width = i['B']
+                found = True
+                break
+        if not found:
+            FreeCAD.Console.PrintWarning("Bearing Worbench: no entry found for designation '" + des + "'.\n")
+        return found
 
-    def DesignationFromSize(self): # TODO:
+    def SetDesignationFromSizes(self, obj):
+        for i in Bwb6Table.lut:
+            if i['d'] == obj.BoreDiameter and i['D'] == obj.OuterDiameter and i['B'] == obj.Width:
+                obj.Designation = PrettyName(i)
+                return
+        obj.Designation = "<not found>"
+        return
 
-    def UpdateDesignationChoice(self): # TODO:
+    def VerifyDesignationAndSize(self, des): # TODO:
+        return
+
+    # update the Designation pulldown menu to provide a list of similar bearings
+    # TODO: do this in a Bearing Task Editor!
+#    def UpdateDesignationChoice(self, obj):
+#        FreeCAD.Console.PrintMessage("MATT: UpdateDesignationChoice: " + obj.Designation + "\n")
+#        des = obj.Designation
+#        ix = des.find(':')
+#        if ix >= 0:
+#            des = des[:ix]
+#        sameType = []
+#        sameBore = []
+#        sameDiameter = []
+#        sameWidth = []
+#        sameDesignation = [ obj.Designation ]
+#        for i in Bwb6Table.lut:
+#            if i['d'] == obj.BoreDiameter and i['D'] == obj.OuterDiameter and i['B'] == obj.Width:
+#                if i['name'] != des:
+#                  sameType.append(PrettyName(i))
+#            else:
+#                if i['d'] == obj.BoreDiameter:
+#                    sameBore.append(PrettyName(i))
+#                if i['D'] == obj.OuterDiameter:
+#                    sameDiameter.append(PrettyName(i))
+#                if i['B'] == obj.Width:
+#                    sameWidth.append(PrettyName(i))
+#        obj.Designation = sameDesignation + sameType + [ "-- Same Bore:" ] + sameBore + [ "-- Same Diameter:"] + sameDiameter + ["-- Same Width:"] + sameWidth
+#        FreeCAD.Console.PrintMessage("MATT: UpdateDesignationChoice: " + obj.Designation + "\n")
+#        return
+
+#    def onDocumentRestored(self, obj): # TODO: check integrity of object for various workbench versions
+#        FreeCAD.Console.PrintMessage("MATT: Bearing::onDocumentRestored\n")
+#        return
 
     def onChanged(self, obj, prop):
         '''Do something when a property has changed'''
-        FreeCAD.Console.PrintMessage("Change property: " + str(prop) + "\n")
-        if  prop == "BoreDiameter" or \
-            prop == "OuterDiameter" or \
-            prop == "Width" \
-            or prop == "HousingFillet":
-          self.execute(obj)
+        FreeCAD.Console.PrintMessage("MATT: Change property: " + str(prop) + "\n")
+        if (self.avoidRecursion):
+            FreeCAD.Console.PrintMessage("MATT:     Avoiding recursion\n")
+            return
+        if not self.avoidRecursion:
+            if      prop == "BoreDiameter" or \
+                    prop == "OuterDiameter" or \
+                    prop == "Width" or\
+                    prop == "HousingFillet":
+                FreeCAD.Console.PrintMessage("MATT: {}: {} {} {}\n".format(obj.Designation, obj.BoreDiameter, obj.OuterDiameter, obj.Width))
+                self.avoidRecursion = True
+                self.SetDesignationFromSizes(obj)
+                self.avoidRecursion = False
+                obj.recompute()
+            if prop == "Designation":
+                found = False
+                self.avoidRecursion = True
+                found = self.SetSizesFromDesignation(obj)
+                self.avoidRecursion = False
+                if found:
+                    self.designationChecked = True
+                    obj.recompute()
+                else:
+                    self.designationChecked = False
+                # else give some kind of warning
 
     def execute(self, obj):
         '''Do something when doing a recomputation, this method is mandatory'''
+        FreeCAD.Console.PrintMessage("MATT: Bearing execute\n")
+        if not self.designationChecked:
+            self.designationChecked = True
+            found = self.SetSizesFromDesignation(obj, False)
+            if not found:
+              self.avoidRecursion = True
+              obj.Designation = "<not found>"
+              self.avoidRecursion = False
 #if SIMPLE
 #        p0 = Base.Vector( obj.BoreDiameter/2.0,  0.0,  obj.Width)
 #        p1 = Base.Vector( obj.OuterDiameter/2.0, 0.0,  obj.Width)
@@ -141,7 +217,7 @@ class Bearing:
 #else if DETAILED
             # if we go crazy, we can draw the balls here
         obj.Shape = aBearing
-        FreeCAD.Console.PrintMessage("Recompute Python Box feature\n")
+        FreeCAD.Console.PrintMessage("Matt: new bearing created\n")
 
 class ViewProviderBearing:
     "A View provider for custom icon"
@@ -169,9 +245,12 @@ class ViewProviderBearing:
 
     def __getstate__(self):
         #        return {'ObjectName' : self.Object.Name}
+        FreeCAD.Console.PrintMessage("MATT: __getstate__\n")
         return None
 
     def __setstate__(self, state):
+        import FreeCAD
+        FreeCAD.Console.PrintMessage("MATT: __setstate__\n")
         if state is not None:
             import FreeCAD
             doc = FreeCAD.ActiveDocument

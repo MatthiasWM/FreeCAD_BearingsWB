@@ -28,10 +28,8 @@ No details yet.
 * vectorize `Icons/BSLogo.svg` and all other incoming icons
 * set the icon colors to dark orange for metric and dark cyan for imperial
 * add screencast and screen shots for this README 
-* add database with known bearing sizes
 * add database selection dialog box
-* add property editor
-* add flip function
+* add "Tasks" dialog to browse database
 * add bearing features (covers, grooves, material, flange, seal, clearance, lubricant...)
 * add BOM that works with linked objects
 

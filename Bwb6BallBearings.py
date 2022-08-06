@@ -7,6 +7,12 @@ from FreeCAD import Base
 import DraftVecUtils
 from pathlib import Path
 
+if FreeCAD.GuiUp:
+    import FreeCADGui
+    import Bwb6Dialog
+    from PySide import QtCore, QtGui
+    from FreeCADGui import PySideUic as uic
+
 import Bwb6Table
 
 def getCommands():
@@ -227,10 +233,24 @@ class ViewProviderBearing:
         self.Object = obj.Object
 
     def attach(self, obj):
+        self.ViewObject = obj
         self.Object = obj.Object
         return
 
     def updateData(self, fp, prop):
+        return
+
+    def setEdit(self, vobj, mode):
+        FreeCAD.Console.PrintMessage("MATT: setEdit\n")
+        taskd = Bwb6Dialog.BearingTaskPanel(self.Object, mode)
+        taskd.obj = vobj.Object
+        taskd.update()
+        FreeCADGui.Control.showDialog(taskd)
+        return True
+
+    def unsetEdit(self,vobj,mode):
+        FreeCAD.Console.PrintMessage("MATT: unsetEdit\n")
+        FreeCADGui.Control.closeDialog()
         return
 
     def getDisplayModes(self, obj):
@@ -257,11 +277,7 @@ class ViewProviderBearing:
             self.Object = doc.getObject(state['ObjectName'])
 
     def getIcon(self):
-#        if hasattr(self.Object, "type"):
-#            return os.path.join(iconPath, self.Object.type + '.svg')
-#        elif hasattr(self.Object.Proxy, "type"):
-#            return os.path.join(iconPath, self.Object.Proxy.type + '.svg')
-        # default to ISO4017.svg
+# TODO:        return ":/icons/PartDesign_Sprocket.svg"
         return os.path.join(iconPath, 'BSLogo.svg')
 
 
@@ -286,6 +302,7 @@ class CmdAddBearing608:
 #        ScrewObj.Label = ScrewObj.Proxy.itemText
         ViewProviderBearing(ScrewObj.ViewObject)
         doc.recompute()
+        FreeCADGui.doCommand("Gui.activeDocument().setEdit(App.ActiveDocument.ActiveObject.Name,0)")
         return
 
     def IsActive(self):

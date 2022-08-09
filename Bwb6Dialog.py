@@ -25,6 +25,7 @@ import FreeCAD, Part
 if FreeCAD.GuiUp:
     import FreeCADGui
     from PySide import QtCore, QtGui
+    from PySide2.QtWidgets import QMenu
     from FreeCADGui import PySideUic as uic
 
 __title__="PartDesign SprocketObject management"
@@ -188,12 +189,16 @@ class BearingTaskPanel:
         self.form=FreeCADGui.PySideUic.loadUi(os.path.dirname(__file__) + "/Bwb6Dialog.ui")
         self.form.setWindowIcon(QtGui.QIcon(":/Icons/BSLogo.svg")) # TODO
         
-        QtCore.QObject.connect(self.form.comboBox_Designation, QtCore.SIGNAL("currentTextChanged(const QString)"), self.designationChanged)
+        QtCore.QObject.connect(self.form.DesignationInput, QtCore.SIGNAL("textEdited(const QString)"), self.designationChanged)
         QtCore.QObject.connect(self.form.Quantity_BoreDiameter, QtCore.SIGNAL("valueChanged(double)"), self.boreDiameterChanged)
-#        QtCore.QObject.connect(self.form.Quantity_RollerDiameter, QtCore.SIGNAL("valueChanged(double)"), self.rollerDiameterChanged)
-#        QtCore.QObject.connect(self.form.spinBox_NumberOfTeeth, QtCore.SIGNAL("valueChanged(int)"), self.numTeethChanged)
-#        QtCore.QObject.connect(self.form.Quantity_Thickness, QtCore.SIGNAL("valueChanged(double)"), self.thicknessChanged)
-        
+        QtCore.QObject.connect(self.form.Quantity_OuterDiameter, QtCore.SIGNAL("valueChanged(double)"), self.outerDiameterChanged)
+        QtCore.QObject.connect(self.form.Quantity_Width, QtCore.SIGNAL("valueChanged(double)"), self.widthChanged)
+
+        QtCore.QObject.connect(self.form.SameSizeChoice, QtCore.SIGNAL("valueChanged(double)"), self.widthChanged)
+        # QMenu Can signel "aboutToShow()", "triggered(action)"
+#        self.form.comboBox_Designation.addItem(string, userdata)
+#        self.form.comboBox_Designation.addItems(string arry)
+#        .count() .removeItem(index) .clear() .currentIndexChanged(int index)
         self.update()
         
         if mode == 0: # fresh created
@@ -204,28 +209,23 @@ class BearingTaskPanel:
         """
         Transfer from the dialog to the object
         """
-        self.obj.Designation = self.form.comboBox_Designation.currentText()
-#        self.obj.NumberOfTeeth = self.form.spinBox_NumberOfTeeth.value()
+        self.obj.Designation = self.form.DesignationInput.text()
         self.obj.BoreDiameter = self.form.Quantity_BoreDiameter.text()
-#        self.obj.RollerDiameter = self.form.Quantity_RollerDiameter.text()
-#        self.obj.SprocketReference = self.form.comboBox_SprocketReference.currentText()
-#        self.obj.Thickness = self.form.Quantity_Thickness.text()
-    
+        self.obj.OuterDiameter = self.form.Quantity_OuterDiameter.text()
+        self.obj.Width = self.form.Quantity_Width.text()
+
     def transferFrom(self):
         """
         Transfer from the object to the dialog
         """
-        self.form.comboBox_Designation.setCurrentText(self.obj.Designation)
-#        self.form.spinBox_NumberOfTeeth.setValue(self.obj.NumberOfTeeth)
+        self.form.DesignationInput.setText(self.obj.Designation)
         self.form.Quantity_BoreDiameter.setText(self.obj.BoreDiameter.UserString)
-#        self.form.Quantity_RollerDiameter.setText(self.obj.RollerDiameter.UserString)
-#        self.form.comboBox_SprocketReference.setCurrentText(self.obj.SprocketReference)
-#        self.form.Quantity_Thickness.setText(self.obj.Thickness.UserString)
-                                                    
-    def boreDiameterChanged(self, value):
-        self.obj.BoreDiameter = value
-        self.obj.Proxy.execute(self.obj)
-#        FreeCAD.Gui.SendMsgToActiveView("ViewFit")
+        self.form.Quantity_OuterDiameter.setText(self.obj.OuterDiameter.UserString)
+        self.form.Quantity_Width.setText(self.obj.Width.UserString)
+        menu = QMenu()
+        menu.addAction("Test")
+        menu.addAction("Toast")
+        self.form.SameSizeChoice.setMenu( menu )
 
     def designationChanged(self, size):
         self.obj.Proxy.SetSizesFromDesignation(self.obj)
@@ -237,21 +237,21 @@ class BearingTaskPanel:
 #        self.form.Quantity_Pitch.setText(self.obj.Pitch.UserString)
 #        self.form.Quantity_RollerDiameter.setText(self.obj.RollerDiameter.UserString)
 #        self.form.Quantity_Thickness.setText(self.obj.Thickness.UserString)
-            
+
         self.obj.Proxy.execute(self.obj)
         FreeCAD.Gui.SendMsgToActiveView("ViewFit")
-        
-    def rollerDiameterChanged(self, value):
-#        self.obj.RollerDiameter = value
+
+    def boreDiameterChanged(self, value):
+        self.obj.BoreDiameter = value
+        self.obj.Proxy.execute(self.obj)
+#        FreeCAD.Gui.SendMsgToActiveView("ViewFit")
+
+    def outerDiameterChanged(self, value):
+        self.obj.OuterDiameter = value
         self.obj.Proxy.execute(self.obj)
 
-    def numTeethChanged(self, value):
-#        self.obj.NumberOfTeeth = value
-#        self.obj.Proxy.execute(self.obj)
-        FreeCAD.Gui.SendMsgToActiveView("ViewFit")
-
-    def thicknessChanged(self, value):
-#        self.obj.Thickness = str(value)
+    def widthChanged(self, value):
+        self.obj.Width = value
         self.obj.Proxy.execute(self.obj)
         
     def getStandardButtons(self):

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>BearingParameter</class>
- <widget class="QWidget" name="BearingParameter">
+ <class>BearingTaskPanel</class>
+ <widget class="QWidget" name="BearingTaskPanel">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -16,173 +16,31 @@
   <layout class="QFormLayout" name="formLayout">
    <item row="0" column="0">
     <widget class="QLabel" name="label_9">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="text">
       <string>Designation:</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_10">
-     <property name="text">
-      <string>Sprocket Reference</string>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="1">
-    <widget class="QComboBox" name="comboBox_SprocketReference">
-     <property name="enabled">
+    <widget class="QToolButton" name="SameSizeChoice">
+     <property name="text">
+      <string>Same Size Variants...</string>
+     </property>
+     <property name="popupMode">
+      <enum>QToolButton::InstantPopup</enum>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonTextBesideIcon</enum>
+     </property>
+     <property name="autoRaise">
       <bool>false</bool>
      </property>
-     <item>
-      <property name="text">
-       <string>ANSI 25</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>ANSI 35</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>ANSI 41</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>ANSI 40</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>ANSI 50</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>ANSI 60</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>ANSI 80</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>ANSI 100</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>ANSI 120</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>ANSI 140</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>ANSI 160</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>ANSI 180</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>ANSI 200</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>ANSI 240</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Bicycle with Derailleur</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Bicycle without Derailleur</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>ISO 606 06B</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>ISO 606 08B</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>ISO 606 10B</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>ISO 606 12B</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>ISO 606 16B</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>ISO 606 20B</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>ISO 606 24B</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Motorcycle 420</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Motorcycle 425</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Motorcycle 428</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Motorcycle 520</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Motorcycle 525</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Motorcycle 530</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Motorcycle 630</string>
-      </property>
-     </item>
+     <property name="arrowType">
+      <enum>Qt::NoArrow</enum>
+     </property>
     </widget>
    </item>
    <item row="2" column="0">
@@ -207,28 +65,28 @@
       </size>
      </property>
      <property name="text">
-      <string>0 in</string>
+      <string/>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
      <property name="singleStep" stdset="0">
-      <double>0.001000000000000</double>
+      <double>0.500000000000000</double>
      </property>
      <property name="maximum" stdset="0">
-      <double>2000.000000000000000</double>
+      <double>100000.000000000000000</double>
      </property>
      <property name="minimum" stdset="0">
       <double>0.010000000000000</double>
      </property>
      <property name="unit" stdset="0">
-      <string notr="true">in</string>
+      <string notr="true">mm</string>
      </property>
      <property name="decimals" stdset="0">
-      <number>3</number>
+      <number>2</number>
      </property>
      <property name="value" stdset="0">
-      <double>0.375000000000000</double>
+      <double>8.000000000000000</double>
      </property>
     </widget>
    </item>
@@ -260,22 +118,22 @@
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
      <property name="singleStep" stdset="0">
-      <double>0.010000000000000</double>
+      <double>0.500000000000000</double>
      </property>
      <property name="maximum" stdset="0">
-      <double>50.000000000000000</double>
+      <double>100000.000000000000000</double>
      </property>
      <property name="minimum" stdset="0">
       <double>0.010000000000000</double>
      </property>
      <property name="unit" stdset="0">
-      <string notr="true">in</string>
+      <string notr="true">mm</string>
      </property>
      <property name="decimals" stdset="0">
-      <number>3</number>
+      <number>2</number>
      </property>
      <property name="value" stdset="0">
-      <double>0.200000000000000</double>
+      <double>22.000000000000000</double>
      </property>
     </widget>
    </item>
@@ -287,9 +145,9 @@
     </widget>
    </item>
    <item row="4" column="1">
-    <widget class="Gui::InputField" name="Quantity_Thicknes">
+    <widget class="Gui::InputField" name="Quantity_Width">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -307,37 +165,27 @@
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
      <property name="singleStep" stdset="0">
-      <double>0.010000000000000</double>
+      <double>0.250000000000000</double>
      </property>
      <property name="maximum" stdset="0">
-      <double>50.000000000000000</double>
+      <double>100000.000000000000000</double>
      </property>
      <property name="minimum" stdset="0">
       <double>0.010000000000000</double>
      </property>
      <property name="unit" stdset="0">
-      <string notr="true">in</string>
+      <string notr="true">mm</string>
      </property>
      <property name="decimals" stdset="0">
-      <number>3</number>
+      <number>2</number>
      </property>
      <property name="value" stdset="0">
-      <double>0.200000000000000</double>
+      <double>7.000000000000000</double>
      </property>
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QComboBox" name="comboBox_Designation">
-     <property name="inputMethodHints">
-      <set>Qt::ImhPreferUppercase</set>
-     </property>
-     <property name="editable">
-      <bool>true</bool>
-     </property>
-     <property name="currentText">
-      <string notr="true"/>
-     </property>
-    </widget>
+    <widget class="QLineEdit" name="DesignationInput"/>
    </item>
   </layout>
  </widget>
@@ -345,7 +193,7 @@
   <customwidget>
    <class>Gui::InputField</class>
    <extends>QLineEdit</extends>
-   <header>Gui/InputField.h</header>
+   <header location="global">Gui/InputField.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
